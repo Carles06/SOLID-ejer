@@ -1,13 +1,14 @@
 package com.kreitek.utils;
 
-import com.kreitek.files.Directory;
+import com.kreitek.files.Directory.Directory;
+import com.kreitek.files.Directory.DirectorySystemItem;
 import com.kreitek.files.File;
 import com.kreitek.files.FileSystemItem;
 
-public class FileSystemBuilder {
 
-    private final FileSystemItem root;
-    private FileSystemItem currentDirectory;
+public class FileSystemBuilder {
+    private final DirectorySystemItem root;
+    private DirectorySystemItem currentDirectory;
 
     public static FileSystemBuilder getBuilder() {
         return new FileSystemBuilder();
@@ -19,18 +20,18 @@ public class FileSystemBuilder {
     }
 
     public FileSystemBuilder addFile(String name, int size) {
-        FileSystemItem file = new File(currentDirectory, name);
+        FileSystemItem file = new File((FileSystemItem) currentDirectory, name);
         file.open();
         file.write(new byte[size]);
         file.close();
-        currentDirectory.addFile(file);
+        currentDirectory.addFile((DirectorySystemItem) file);
         return this;
     }
 
     public FileSystemBuilder addDirectory(String name) {
-        FileSystemItem directory = new Directory(currentDirectory, name);
-        currentDirectory.addFile(directory);
-        currentDirectory = directory;
+        FileSystemItem directory = (FileSystemItem) new Directory(currentDirectory, name);
+        currentDirectory.addFile((DirectorySystemItem) directory);
+        currentDirectory = (DirectorySystemItem) directory;
         return this;
     }
 
@@ -41,7 +42,7 @@ public class FileSystemBuilder {
         return this;
     }
 
-    public FileSystemItem build() {
+    public DirectorySystemItem build() {
         return root;
     }
 }

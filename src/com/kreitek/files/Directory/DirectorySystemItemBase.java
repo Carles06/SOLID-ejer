@@ -1,17 +1,15 @@
-package com.kreitek.files;
+package com.kreitek.files.Directory;
 
-import com.kreitek.files.Directory.Directory;
+public abstract class DirectorySystemItemBase implements DirectorySystemItem {
 
-import java.util.List;
-
-public abstract class FileSystemItemBase implements FileSystemItem {
     protected static final String PATH_SEPARATOR = "/";
     protected String name;
-    protected FileSystemItem parent;
+    protected DirectorySystemItem parent;
 
-    protected FileSystemItemBase(FileSystemItem parent, String name) {
-        setName(name);
-        setParent(parent);
+    public DirectorySystemItemBase() {
+        this.name = name;
+        this.parent = parent;
+        final String PATH_SEPARATOR = "/";
     }
 
     @Override
@@ -24,12 +22,16 @@ public abstract class FileSystemItemBase implements FileSystemItem {
         if (name == null) {
             throw new IllegalArgumentException("El nombre no puede ser nulo");
         }
-       this.name = name;
+        this.name = name;
     }
 
+    @Override
+    public DirectorySystemItem getParent() {
+        return parent;
+    }
 
     @Override
-    public void setParent(FileSystemItem directory) {
+    public void setParent(DirectorySystemItem directory) {
         if (directory != null && !(directory instanceof Directory)) {
             throw new IllegalArgumentException("El padre solo puede ser un directorio");
         }
@@ -39,8 +41,6 @@ public abstract class FileSystemItemBase implements FileSystemItem {
             if (directory != null) directory.addFile(this);
         }
     }
-
-    @Override
     public String getFullPath() {
         String path = PATH_SEPARATOR;
         if (parent != null) {
@@ -50,22 +50,4 @@ public abstract class FileSystemItemBase implements FileSystemItem {
         path = path + getName();
         return path;
     }
-
-    @Override
-    public abstract String getExtension();
-
-    @Override
-    public abstract List<FileSystemItem> listFiles();
-
-    @Override
-    public abstract int getSize();
-
-    @Override
-    public abstract void open();
-
-
-    @Override
-    public abstract void write(byte[] buffer);
-
-    public abstract void close();
 }
